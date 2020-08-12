@@ -293,19 +293,19 @@ class AdvancedSearchController: UIViewController, NVActivityIndicatorViewable, U
             return cell
         }
             
-//        else if objData.fieldType == "glocation_textfield" {
-//            let cell: SearchAutoCompleteTextField = tableView.dequeueReusableCell(withIdentifier: "SearchAutoCompleteTextField", for: indexPath) as! SearchAutoCompleteTextField
-//
+        else if objData.fieldType == "glocation_textfield" {
+            let cell: SearchAutoCompleteTextField = tableView.dequeueReusableCell(withIdentifier: "SearchAutoCompleteTextField", for: indexPath) as! SearchAutoCompleteTextField
+
 //            if let txtTitle = objData.title {
-//                cell.txtAutoComplete.placeholder = txtTitle
+                cell.txtAutoComplete.placeholder = "Zip Code"
 //            }
 //
 //            if let fieldValue = objData.fieldVal {
 //                cell.txtAutoComplete.text = fieldValue
 //            }
 //            cell.fieldName = objData.fieldTypeName
-//            return cell
-//            }
+            return cell
+            }
         else if objData.fieldType == "seekbar" {
             let cell: SeekBar = tableView.dequeueReusableCell(withIdentifier: "SeekBar", for: indexPath) as! SeekBar
             if let title = objData.title {
@@ -635,11 +635,11 @@ class SearchAutoCompleteTextField: UITableViewCell, UITextFieldDelegate, GMSMapV
     
     //MARK:- Text Field Delegate Method
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        let searchVC = GMSAutocompleteViewController()
-        searchVC.delegate = self
-        self.window?.rootViewController?.present(searchVC, animated: true, completion: nil)
-    }
+//    func textFieldDidBeginEditing(_ textField: UITextField) {
+//        let searchVC = GMSAutocompleteViewController()
+//        searchVC.delegate = self
+//        self.window?.rootViewController?.present(searchVC, animated: true, completion: nil)
+//    }
     
     // Google Places Delegate Methods
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
@@ -856,5 +856,10 @@ class RadioButtonTableViewCell : UITableViewCell {
 }
 
 
-
+class zipcoeTableCell : UITableViewCell {
+    
+    override func awakeFromNib() {
+        
+    }
+}
 
