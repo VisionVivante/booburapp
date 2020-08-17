@@ -293,19 +293,19 @@ class AdvancedSearchController: UIViewController, NVActivityIndicatorViewable, U
             return cell
         }
             
-        else if objData.fieldType == "glocation_textfield" {
-            let cell: SearchAutoCompleteTextField = tableView.dequeueReusableCell(withIdentifier: "SearchAutoCompleteTextField", for: indexPath) as! SearchAutoCompleteTextField
-
-//            if let txtTitle = objData.title {
-                cell.txtAutoComplete.placeholder = "Zip Code"
-//            }
+//        else if objData.fieldType == "glocation_textfield" {
+//            let cell: SearchAutoCompleteTextField = tableView.dequeueReusableCell(withIdentifier: "SearchAutoCompleteTextField", for: indexPath) as! SearchAutoCompleteTextField
 //
-//            if let fieldValue = objData.fieldVal {
-//                cell.txtAutoComplete.text = fieldValue
+////            if let txtTitle = objData.title {
+//                cell.txtAutoComplete.placeholder = "Zip Code"
+////            }
+////
+////            if let fieldValue = objData.fieldVal {
+////                cell.txtAutoComplete.text = fieldValue
+////            }
+////            cell.fieldName = objData.fieldTypeName
+//            return cell
 //            }
-//            cell.fieldName = objData.fieldTypeName
-            return cell
-            }
         else if objData.fieldType == "seekbar" {
             let cell: SeekBar = tableView.dequeueReusableCell(withIdentifier: "SeekBar", for: indexPath) as! SeekBar
             if let title = objData.title {
