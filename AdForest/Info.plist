@@ -69,7 +69,6 @@
 	<string>App needs to access photos while posting ad as well as for profile picture!</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
