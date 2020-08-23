@@ -12,10 +12,19 @@ import FBSDKLoginKit
 import GoogleSignIn
 import NVActivityIndicatorView
 import SDWebImage
+import AuthenticationServices
 
 class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndicatorViewable, GIDSignInUIDelegate, GIDSignInDelegate , UIScrollViewDelegate{
     
+    var first_name = String()
+    var last_name =  String()
+    var email =  String()
+    var my_id = String()
+    
+    
+    
     //MARK:- Outlets
+    @IBOutlet weak var appleLoginView: UIView!
     @IBOutlet weak var scrollView: UIScrollView! {
         didSet {
             scrollView.isScrollEnabled = false
@@ -91,6 +100,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
         self.adForest_loginDetails()
+        
+        if #available(iOS 13.0, *) {
+            let appleBTN = ASAuthorizationAppleIDButton()
+            appleLoginView.addSubview(appleBTN)
+            appleBTN.center = self.appleLoginView.center
+        } else {
+            // Fallback on earlier versions
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -100,12 +118,30 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
         defaults.removeObject(forKey: "isGuest")
         defaults.synchronize()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
     }
-   
+    
+    
+    @IBAction func AppleLoginClicked(_ sender: UIButton) {
+        
+        if #available(iOS 13.0, *) {
+            let authorizationProvider = ASAuthorizationAppleIDProvider()
+            let request = authorizationProvider.createRequest()
+            request.requestedScopes = [.fullName, .email]
+            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+            authorizationController.delegate = self
+            authorizationController.presentationContextProvider = self
+            authorizationController.performRequests()
+        }
+        
+        
+    }
+    
+    
+    
     //MARK:- text Field Delegate Methods
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -128,7 +164,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
     func adForest_populateData() {
         if UserHandler.sharedInstance.objLoginDetails != nil {
             let objData = UserHandler.sharedInstance.objLoginDetails
-           
+            
             if let isVerification = objData?.isVerifyOn {
                 self.isVerifyOn = isVerification
             }
@@ -162,7 +198,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
             if let submitText = objData?.formBtn {
                 self.buttonSubmit.setTitle(submitText, for: .normal)
             }
-           
+            
             if let registerText = objData?.registerText {
                 self.buttonRegisterWithUs.setTitle(registerText, for: .normal)
             }
@@ -173,7 +209,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
             }
             let  settingObject = NSKeyedUnarchiver.unarchiveObject(with: settings as! Data) as! [String : Any]
             let objSettings = SettingsRoot(fromDictionary: settingObject)
-
+            
             
             var isShowGuestButton = false
             if let isShowGuest = objSettings.data.isAppOpen {
@@ -186,9 +222,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
                 }
             }
             else {
-                  self.buttonGuestLogin.isHidden = true
+                self.buttonGuestLogin.isHidden = true
             }
-
+            
             // Show/hide google and facebook button
             var isShowGoogle = false
             var isShowFacebook = false
@@ -215,8 +251,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
                     self.buttonGoogleLogin.setTitle(googletext, for: .normal)
                 }
             }
-        
-          else if isShowFacebook && isShowGoogle == false {
+                
+            else if isShowFacebook && isShowGoogle == false {
                 self.buttonFBLogin.isHidden = false
                 self.buttonFBLogin.translatesAutoresizingMaskIntoConstraints = false
                 buttonFBLogin.leftAnchor.constraint(equalTo: self.containerViewSocialButton.leftAnchor, constant: 0).isActive = true
@@ -226,12 +262,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
                 }
             }
                 
-           else if isShowGoogle && isShowFacebook == false {
+            else if isShowGoogle && isShowFacebook == false {
                 self.buttonGoogleLogin.isHidden = false
                 self.buttonGoogleLogin.translatesAutoresizingMaskIntoConstraints = false
                 buttonGoogleLogin.leftAnchor.constraint(equalTo: self.containerViewSocialButton.leftAnchor, constant: 0).isActive = true
                 buttonGoogleLogin.rightAnchor.constraint(equalTo: self.containerViewSocialButton.rightAnchor, constant: 0).isActive = true
-               
+                
                 if let googletext = objData?.googleBtn {
                     self.buttonGoogleLogin.setTitle(googletext, for: .normal)
                 }    
@@ -287,9 +323,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
         }
         else {
             let param : [String : Any] = [
-                                            "email" : email,
-                                            "password": password
-                                        ]
+                "email" : email,
+                "password": password
+            ]
             print(param)
             self.defaults.set(email, forKey: "email")
             self.defaults.set(password, forKey: "password")
@@ -335,7 +371,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
         let registerVC = self.storyboard?.instantiateViewController(withIdentifier: "RegisterViewController") as! RegisterViewController
         self.navigationController?.pushViewController(registerVC, animated: true)
     }
-
+    
     //MARK:- Google Delegate Methods
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
@@ -352,17 +388,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
             }
             print("\(email), \(googleID), \(name), \(token)")
             let param: [String: Any] = [
-                                        "email": email,
-                                        "type": "social"
-                                        ]
+                "email": email,
+                "type": "social"
+            ]
             print(param)
             self.defaults.set(true, forKey: "isSocial")
             self.defaults.set(email, forKey: "email")
             self.defaults.set("1122", forKey: "password")
             self.defaults.synchronize()
             self.adForest_loginUser(parameters: param as NSDictionary)
+        }
     }
-}
     // Google Sign In Delegate
     func sign(_ signIn: GIDSignIn!, present viewController: UIViewController!) {
         self.present(viewController, animated: true, completion: nil)
@@ -449,7 +485,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
                         confirmationVC.user_id = successResponse.data.id
                         self.navigationController?.pushViewController(confirmationVC, animated: true)
                     })
-                   self.presentVC(alert)
+                    self.presentVC(alert)
                 }
                 else {
                     self.defaults.set(true, forKey: "isLogin")
@@ -465,5 +501,118 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
             let alert = Constants.showBasicAlert(message: error.message)
             self.presentVC(alert)
         }
+    }
+}
+
+
+extension LoginViewController: ASAuthorizationControllerDelegate {
+    @available(iOS 13.0, *)
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        // guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+        // return
+        // }
+        
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            // Create an account in your system.
+            let userIdentifier = appleIDCredential.user
+            let userFirstName = appleIDCredential.fullName?.givenName
+            let userLastName = appleIDCredential.fullName?.familyName
+            let userEmail = appleIDCredential.email
+            let fullName = appleIDCredential.fullName
+            print(userIdentifier, userFirstName , userLastName, userEmail, fullName)
+            
+            let appleIDProvider = ASAuthorizationAppleIDProvider()
+            appleIDProvider.getCredentialState(forUserID:userIdentifier) { (credentialState, error) in
+                switch credentialState {
+                case .authorized:
+                    // The Apple ID credential is valid.
+                    debugPrint("The Apple ID credential is valid")
+                    if let userEmail = appleIDCredential.email,let fullName = appleIDCredential.fullName {
+                        
+                        let userIdentifier = appleIDCredential.user
+                        let userFirstName = appleIDCredential.fullName?.givenName
+                        let userLastName = appleIDCredential.fullName?.familyName
+                        let userEmail = appleIDCredential.email
+                        let user_id = userIdentifier.replacingOccurrences(of: ".", with: "")
+                        self.my_id = user_id
+                        UserDefaults.standard.setValue(user_id, forKey: "appleId")
+                        UserDefaults.standard.setValue(userFirstName, forKey: "appleFirstName")
+                        UserDefaults.standard.setValue(userLastName, forKey: "appleLastName")
+                        UserDefaults.standard.setValue(userEmail, forKey: "appleEmail")
+                        UserDefaults.standard.set(self.my_id, forKey: "uid")
+                        self.first_name = userFirstName ?? ""
+                        self.last_name = userLastName ?? ""
+                        self.email = userEmail ?? ""
+                        
+                        let userlatitudes = UserDefaults.standard.value(forKey: "Latitude") as? String ?? ""
+                        let userlongitudes = UserDefaults.standard.value(forKey: "Longitude") as? String  ?? ""
+                        let userCitys = UserDefaults.standard.value(forKey: "City") as? String ?? ""
+                        let deviceID = UserDefaults.standard.value(forKey: "deviceToken") as? String ?? ""
+                        
+//                        DispatchQueue.main.async {
+//                        self.getAppleSignInData(username:self.first_name,email:self.email,profile_pic:"rt",latitude:userlatitudes,longitude:userlongitudes,address:userCitys,appleid:self.my_id,device_token:deviceID,device_type:"1")
+//                        }
+                        
+                   
+                    }else{
+                        let user_id = userIdentifier.replacingOccurrences(of: ".", with: "")
+                        self.my_id = user_id
+                        UserDefaults.standard.set(self.my_id, forKey: "uid")
+                        let userId = UserDefaults.standard.value(forKey: "appleId") as? String
+                        if self.my_id == userId {
+                            self.first_name = UserDefaults.standard.value(forKey: "appleFirstName") as? String ?? ""
+                            self.last_name = UserDefaults.standard.value(forKey: "appleLastName") as? String ?? ""
+                            self.email = UserDefaults.standard.value(forKey: "appleEmail") as? String ?? ""
+                        }
+                        
+                        let userlatitudes = UserDefaults.standard.value(forKey: "Latitude") as? String ?? ""
+                        let userlongitudes = UserDefaults.standard.value(forKey: "Longitude") as? String  ?? ""
+                        let userCitys = UserDefaults.standard.value(forKey: "City") as? String ?? ""
+                        let deviceID = UserDefaults.standard.value(forKey: "deviceToken") as? String ?? ""
+                        
+//                        DispatchQueue.main.async {
+//                            self.getAppleSignInData(username:self.first_name,email:self.email,profile_pic:"rt",latitude:userlatitudes,longitude:userlongitudes,address:userCitys,appleid:self.my_id,device_token:deviceID,device_type:"1")
+//
+//                        }
+                    }
+                    break
+                case .revoked:
+                    // The Apple ID credential is revoked.
+                    debugPrint("The Apple ID credential is revoked")
+                    
+                    break
+                case .notFound:
+                    // No credential was found, so show the sign-in UI.
+                    break
+                default:
+                    break
+                }
+            }
+            //Navigate to other view controller
+        } else if let passwordCredential = authorization.credential as? ASPasswordCredential {
+            // Sign in using an existing iCloud Keychain credential.
+            let username = passwordCredential.user
+            let password = passwordCredential.password
+            
+            //Navigate to other view controller
+        }
+        
+        
+        
+        
+        // print("AppleID Crendential Authorization: userId: \(appleIDCredential.user), email: \(String(describing: appleIDCredential.email))")
+        
+    }
+    @available(iOS 13.0, *)
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print("AppleID Crendential failed with error: \(error.localizedDescription)")
+    }
+}
+
+extension LoginViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    @available(iOS 13.0, *)
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
     }
 }

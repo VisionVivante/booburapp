@@ -186,7 +186,25 @@
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c2c-Uh-JnG">
                                                 <rect key="frame" x="8" y="510.5" width="304" height="49"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hDx-Kw-fEX">
+                                                        <rect key="frame" x="0.0" y="0.0" width="304" height="49"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <state key="normal" title="Sign in With Apple">
+                                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </state>
+                                                        <connections>
+                                                            <action selector="AppleLoginClicked:" destination="92Y-If-PP8" eventType="touchUpInside" id="XEk-nM-wXc"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="bottom" secondItem="hDx-Kw-fEX" secondAttribute="bottom" id="0eO-I3-jpN"/>
+                                                    <constraint firstAttribute="trailing" secondItem="hDx-Kw-fEX" secondAttribute="trailing" id="150-be-pkn"/>
+                                                    <constraint firstItem="hDx-Kw-fEX" firstAttribute="top" secondItem="c2c-Uh-JnG" secondAttribute="top" id="Ppl-mO-rq7"/>
+                                                    <constraint firstItem="hDx-Kw-fEX" firstAttribute="leading" secondItem="c2c-Uh-JnG" secondAttribute="leading" id="pSV-t6-IKj"/>
+                                                </constraints>
                                             </view>
                                         </subviews>
                                         <constraints>
@@ -281,6 +299,7 @@
                     <navigationItem key="navigationItem" id="uaS-KJ-zfM"/>
                     <size key="freeformSize" width="320" height="700"/>
                     <connections>
+                        <outlet property="appleLoginView" destination="c2c-Uh-JnG" id="YHU-7m-UgX"/>
                         <outlet property="buttonFBLogin" destination="Zcq-nb-3HX" id="XIk-bW-2Hv"/>
                         <outlet property="buttonForgotPassword" destination="tw3-P6-2yp" id="5GW-6v-nCB"/>
                         <outlet property="buttonGoogleLogin" destination="UQv-dd-4AF" id="IaW-Xv-Ydw"/>
