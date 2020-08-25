@@ -21,8 +21,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
     var email =  String()
     var my_id = String()
     
-    
-    
+
     //MARK:- Outlets
     @IBOutlet weak var appleLoginView: UIView!
     @IBOutlet weak var scrollView: UIScrollView! {
@@ -103,8 +102,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
         
         if #available(iOS 13.0, *) {
             let appleBTN = ASAuthorizationAppleIDButton()
-            appleLoginView.addSubview(appleBTN)
-            appleBTN.center = self.appleLoginView.center
+
+
+//            appleBTN.center = self.appleLoginView.center
         } else {
             // Fallback on earlier versions
         }
@@ -508,10 +508,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
 extension LoginViewController: ASAuthorizationControllerDelegate {
     @available(iOS 13.0, *)
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        // guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-        // return
-        // }
-        
+
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             // Create an account in your system.
             let userIdentifier = appleIDCredential.user
@@ -543,15 +540,23 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
                         self.first_name = userFirstName ?? ""
                         self.last_name = userLastName ?? ""
                         self.email = userEmail ?? ""
-                        
-                        let userlatitudes = UserDefaults.standard.value(forKey: "Latitude") as? String ?? ""
-                        let userlongitudes = UserDefaults.standard.value(forKey: "Longitude") as? String  ?? ""
-                        let userCitys = UserDefaults.standard.value(forKey: "City") as? String ?? ""
-                        let deviceID = UserDefaults.standard.value(forKey: "deviceToken") as? String ?? ""
-                        
-//                        DispatchQueue.main.async {
+
+                        DispatchQueue.main.async {
 //                        self.getAppleSignInData(username:self.first_name,email:self.email,profile_pic:"rt",latitude:userlatitudes,longitude:userlongitudes,address:userCitys,appleid:self.my_id,device_token:deviceID,device_type:"1")
-//                        }
+ 
+                        let param: [String: Any] = [
+                            "email": self.email,
+                            "type": "social"
+                        ]
+                        
+                        print(param)
+                        self.defaults.set(true, forKey: "isSocial")
+                        self.defaults.set(self.email, forKey: "email")
+                        self.defaults.set("1122", forKey: "password")
+                        self.defaults.synchronize()
+                        
+                        self.adForest_loginUser(parameters: param as NSDictionary)
+                        }
                         
                    
                     }else{
@@ -570,10 +575,25 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
                         let userCitys = UserDefaults.standard.value(forKey: "City") as? String ?? ""
                         let deviceID = UserDefaults.standard.value(forKey: "deviceToken") as? String ?? ""
                         
-//                        DispatchQueue.main.async {
+                        DispatchQueue.main.async {
+                        
+                            let param: [String: Any] = [
+                                "email": self.email,
+                                "type": "social"
+                            ]
+                            
+                            print(param)
+                            self.defaults.set(true, forKey: "isSocial")
+                            self.defaults.set(self.email, forKey: "email")
+                            self.defaults.set("1122", forKey: "password")
+                            self.defaults.synchronize()
+                            
+                            self.adForest_loginUser(parameters: param as NSDictionary)
+                        
+                        
 //                            self.getAppleSignInData(username:self.first_name,email:self.email,profile_pic:"rt",latitude:userlatitudes,longitude:userlongitudes,address:userCitys,appleid:self.my_id,device_token:deviceID,device_type:"1")
 //
-//                        }
+                        }
                     }
                     break
                 case .revoked:
@@ -596,10 +616,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
             
             //Navigate to other view controller
         }
-        
-        
-        
-        
+
         // print("AppleID Crendential Authorization: userId: \(appleIDCredential.user), email: \(String(describing: appleIDCredential.email))")
         
     }

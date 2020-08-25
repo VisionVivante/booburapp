@@ -187,12 +187,18 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c2c-Uh-JnG">
                                                 <rect key="frame" x="8" y="510.5" width="304" height="49"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hDx-Kw-fEX">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hDx-Kw-fEX">
                                                         <rect key="frame" x="0.0" y="0.0" width="304" height="49"/>
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Sign in With Apple">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                <integer key="value" value="5"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
                                                         <connections>
                                                             <action selector="AppleLoginClicked:" destination="92Y-If-PP8" eventType="touchUpInside" id="XEk-nM-wXc"/>
                                                         </connections>
@@ -205,6 +211,11 @@
                                                     <constraint firstItem="hDx-Kw-fEX" firstAttribute="top" secondItem="c2c-Uh-JnG" secondAttribute="top" id="Ppl-mO-rq7"/>
                                                     <constraint firstItem="hDx-Kw-fEX" firstAttribute="leading" secondItem="c2c-Uh-JnG" secondAttribute="leading" id="pSV-t6-IKj"/>
                                                 </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="5"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
                                             </view>
                                         </subviews>
                                         <constraints>
@@ -10477,7 +10488,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gMF-GP-yke" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1616.25" y="805.9859154929577"/>
+            <point key="canvasLocation" x="1588" y="885"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
