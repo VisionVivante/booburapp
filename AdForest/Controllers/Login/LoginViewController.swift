@@ -21,7 +21,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
     var email =  String()
     var my_id = String()
     
-
+    
+    
     //MARK:- Outlets
     @IBOutlet weak var appleLoginView: UIView!
     @IBOutlet weak var scrollView: UIScrollView! {
@@ -344,6 +345,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
             }
             else if error == nil {
                 self.userProfileDetails()
+
             } else {
             }
         }
@@ -411,33 +413,70 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NVActivityIndi
     //MARK:- Facebook Delegate Methods
     
     func userProfileDetails() {
-        if (FBSDKAccessToken.current() != nil) {
-            FBSDKGraphRequest(graphPath: "/me", parameters: ["fields": "id, name, first_name, last_name, email, gender, picture.type(large)"]).start { (connection, result, error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "Nothing")
-                    return
-                }
-                else {
-                    guard let results = result as? NSDictionary else { return }
-                    guard let facebookId = results["email"] as? String,
-                        let email = results["email"] as? String else {
-                            return
-                    }
-                    print("\(email), \(facebookId)")
-                    let param: [String: Any] = [
-                        "email": email,
-                        "type": "social"
-                    ]
-                    print(param)
-                    self.defaults.set(true, forKey: "isSocial")
-                    self.defaults.set(email, forKey: "email")
-                    self.defaults.set("1122", forKey: "password")
-                    self.defaults.synchronize()
+        
+        
+        
+        if((FBSDKAccessToken.current()) != nil){
+               FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email, gender, picture.type(large)"]).start(completionHandler: { (connection, result, error) -> Void in
+                   if (error == nil){
+                    print(result ?? "")
+                       guard let results = result as? NSDictionary else { return }
+                                 // guard let facebookId = results["email"] as? String,
                     
-                    self.adForest_loginUser(parameters: param as NSDictionary)
-                }
-            }
-        }
+             
+                    var email = results["email"] as? String ?? ""
+                    let id = results["id"] as? String ?? ""
+                    let defaultEmail = id + "@facebook.com"
+                    
+                    email = email == "" ? defaultEmail:email
+                    
+                                  print("\(email),")
+                                  let param: [String: Any] = [
+                                      "email": email,
+                                      "type": "social"
+                                  ]
+                                  print(param)
+                                  self.defaults.set(true, forKey: "isSocial")
+                                  self.defaults.set(email, forKey: "email")
+                                  self.defaults.set("1122", forKey: "password")
+                                  self.defaults.synchronize()
+                                  
+                                  self.adForest_loginUser(parameters: param as NSDictionary)
+                       
+                   }else {
+                       print(error?.localizedDescription ?? "Nothing")
+                   }
+               })
+           }
+        
+        
+//        if (FBSDKAccessToken.current() != nil) {
+//            FBSDKGraphRequest(graphPath: "/me", parameters: ["fields": "id, name, first_name, last_name, email, gender, picture.type(large)"]).start { (connection, result, error) in
+//                if error != nil {
+//                    print(error?.localizedDescription ?? "Nothing")
+//                    return
+//                }
+//                else {
+//                    guard let results = result as? NSDictionary else { return }
+//                    guard let facebookId = results["email"] as? String,
+//                        let email = results["email"] as? String else {
+//                            return
+//                    }
+//                    print("\(email), \(facebookId)")
+//                    let param: [String: Any] = [
+//                        "email": email,
+//                        "type": "social"
+//                    ]
+//                    print(param)
+//                    self.defaults.set(true, forKey: "isSocial")
+//                    self.defaults.set(email, forKey: "email")
+//                    self.defaults.set("1122", forKey: "password")
+//                    self.defaults.synchronize()
+//
+//                    self.adForest_loginUser(parameters: param as NSDictionary)
+//                }
+//            }
+//        }
     }
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         
